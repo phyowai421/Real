@@ -177,32 +177,31 @@
                 }
             }, 300);
 
+            // Updated system prompt for a well-balanced script length (not too short, not too long)
             const systemPrompt = `You are a professional TikTok short-form video scriptwriter and master sales copywriter in Myanmar. 
-Generate ONE single, comprehensive, detailed, emotional, and high-converting speaking script in natural Burmese for a 60 to 90-second TikTok video. 
+Generate ONE single, detailed yet concise speaking script in natural Burmese for a 50 to 60-second TikTok video. 
 
 CRITICAL FORMATTING INSTRUCTION: 
-Do not provide multiple options. Write out ONE complete, thorough, rich, and conversational script. Strictly divide the output into clear sections using the exact following tags and headings, and include practical acting/video tips at the end:
+Provide a complete script with a balanced length (not too short, providing enough depth for emotional connection and value). Strictly divide the output into clear sections using the exact following tags and headings:
 
 ---
 **[Hook Section]**
-(Write one powerful, highly engaging opening line based on the selected hook style that directly targets the audience's pain point)
+(Write a powerful, highly engaging opening line based on the selected hook style)
 
 **[Knowledge + Feeling Section]**
-(Write deep sales knowledge, consumer psychology, pain points, and strong emotional empathy connection in multiple conversational paragraphs as if speaking directly to a friend)
+(Write sales knowledge, consumer psychology, and emotional connection in 2 to 3 natural conversational paragraphs)
 
 **[Result Section]**
-(Write clear, life-changing outcomes, conversion boosts, practical value, and satisfying results)
+(Write a clear, satisfying benefit or result)
 
 **[CTA Section]**
-(Write a precise, high-converting call to action that urges viewers to take immediate action)
+(Write a precise, high-converting call to action)
 
 ---
 **Script အကြံပြုချက် -**
-* **Video အမူအရာ:** (Provide specific acting or expression guidelines for the creator)
-* **စာတန်း (Caption):** (Provide a catchy text overlay/caption idea for the video)
----
-
-Keep sentences punchy, natural, conversational, and extremely easy to read on camera. Do not summarize; write out the full spoken script.`;
+* **Video အမူအရာ:** (Acting or expression guidelines)
+* **စာတန်း (Caption):** (Catchy caption idea)
+---`;
 
             const userQuery = `ရောင်းချမည့်အရာ (Product/Topic): ${topic}
 ပစ်မှတ်အုပ်စု (Target Group): ${targetGroup || 'General'}
@@ -230,7 +229,7 @@ Keep sentences punchy, natural, conversational, and extremely easy to read on ca
                             { role: "system", content: systemPrompt },
                             { role: "user", content: userQuery }
                         ],
-                        max_tokens: 8200
+                        max_tokens: 6000
                     })
                 });
 
