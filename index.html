@@ -59,23 +59,27 @@
             <div>
                 <label class="block text-sm font-medium mb-4 text-slate-300 text-center">Chet Holmes's Buyer's Pyramid (ဝယ်ယူသူ၏ အသိအမြင်အဆင့်)</label>
                 
-                <div class="mb-6 drop-shadow-[0_10px_15px_rgba(0,0,0,0.4)] cursor-default select-none">
-                    <div class="relative w-full max-w-[320px] mx-auto h-[240px] flex flex-col [clip-path:polygon(30%_0%,70%_0%,100%_100%,0%_100%)] rounded-t-xl bg-slate-800 transition-all duration-300">
-                        <div class="flex-1 w-full bg-gradient-to-b from-rose-400 to-rose-600 flex items-center justify-center text-white text-[11px] sm:text-xs font-bold border-b border-rose-300/30 hover:brightness-110 transition-all group">
-                            <span class="group-hover:scale-110 transition-transform duration-200 drop-shadow-md">3% (Buying Now)</span>
-                        </div>
-                        <div class="flex-1 w-full bg-gradient-to-b from-orange-400 to-orange-600 flex items-center justify-center text-white text-[11px] sm:text-xs font-bold border-b border-orange-300/30 hover:brightness-110 transition-all group">
-                            <span class="group-hover:scale-110 transition-transform duration-200 drop-shadow-md">7% (Open to it)</span>
-                        </div>
-                        <div class="flex-1 w-full bg-gradient-to-b from-amber-400 to-amber-600 flex items-center justify-center text-white text-[11px] sm:text-xs font-bold border-b border-amber-300/30 hover:brightness-110 transition-all group">
-                            <span class="group-hover:scale-110 transition-transform duration-200 drop-shadow-md">30% (Not Thinking)</span>
-                        </div>
-                        <div class="flex-1 w-full bg-gradient-to-b from-sky-400 to-sky-600 flex items-center justify-center text-white text-[11px] sm:text-xs font-bold border-b border-sky-300/30 hover:brightness-110 transition-all group">
-                            <span class="group-hover:scale-110 transition-transform duration-200 drop-shadow-md">30% (Think Not Interested)</span>
-                        </div>
-                        <div class="flex-1 w-full bg-gradient-to-b from-slate-500 to-slate-700 flex items-center justify-center text-white text-[11px] sm:text-xs font-bold hover:brightness-110 transition-all group">
-                            <span class="group-hover:scale-110 transition-transform duration-200 drop-shadow-md">30% (Definitely Not)</span>
-                        </div>
+                <!-- Enhanced True Triangle Pyramid Visualization -->
+                <div class="mb-6 flex flex-col items-center justify-center space-y-1 select-none">
+                    <!-- 3% (Top Peak) -->
+                    <div class="w-[90px] h-[32px] bg-gradient-to-r from-rose-500 to-rose-600 [clip-path:polygon(20%_0%,80%_0%,100%_100%,0%_100%)] flex items-center justify-center text-white text-[10px] font-bold shadow-lg hover:scale-105 transition-transform cursor-pointer">
+                        3% (Buying Now)
+                    </div>
+                    <!-- 7% -->
+                    <div class="w-[150px] h-[32px] bg-gradient-to-r from-orange-500 to-orange-600 [clip-path:polygon(12%_0%,88%_0%,100%_100%,0%_100%)] flex items-center justify-center text-white text-[11px] font-bold shadow-lg hover:scale-105 transition-transform cursor-pointer">
+                        7% (Open to it)
+                    </div>
+                    <!-- 30% Middle -->
+                    <div class="w-[210px] h-[32px] bg-gradient-to-r from-amber-500 to-amber-600 [clip-path:polygon(8%_0%,92%_0%,100%_100%,0%_100%)] flex items-center justify-center text-white text-[11px] font-bold shadow-lg hover:scale-105 transition-transform cursor-pointer">
+                        30% (Not Thinking)
+                    </div>
+                    <!-- 30% Lower -->
+                    <div class="w-[270px] h-[32px] bg-gradient-to-r from-sky-500 to-sky-600 [clip-path:polygon(5%_0%,95%_0%,100%_100%,0%_100%)] flex items-center justify-center text-white text-[11px] font-bold shadow-lg hover:scale-105 transition-transform cursor-pointer">
+                        30% (Think Not Interested)
+                    </div>
+                    <!-- 30% Base -->
+                    <div class="w-[330px] h-[36px] bg-gradient-to-r from-slate-600 to-slate-700 [clip-path:polygon(2%_0%,98%_0%,100%_100%,0%_100%)] rounded-b-md flex items-center justify-center text-white text-[11px] font-bold shadow-lg hover:scale-105 transition-transform cursor-pointer">
+                        30% (Definitely Not Interested)
                     </div>
                 </div>
 
@@ -117,6 +121,9 @@
                     <h2 class="font-bold text-lg text-emerald-400">ထွက်လာသော TikTok Script:</h2>
                     <button onclick="copyContent()" class="bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-200 transition">Copy ကူးမည်</button>
                 </div>
+                <!-- Selection Summary Header (ရွေးချယ်ထားချက်များ ပြသရန်) -->
+                <div id="selectionSummary" class="bg-slate-800/90 border border-slate-700 rounded-xl p-3 text-xs text-sky-300 space-y-1"></div>
+                
                 <div id="outputContent" class="bg-slate-900 border border-slate-700 rounded-xl p-4 text-slate-200 text-sm whitespace-pre-line leading-relaxed select-all"></div>
             </div>
         </main>
@@ -130,7 +137,9 @@
             const topic = document.getElementById('topicInput').value.trim();
             const targetGroup = document.getElementById('targetGroupInput').value.trim();
             const targetCustomer = document.getElementById('targetInput').value.trim();
-            const pyramidStage = document.getElementById('pyramidSelect').value;
+            const pyramidSelectElem = document.getElementById('pyramidSelect');
+            const pyramidStage = pyramidSelectElem.value;
+            const pyramidText = pyramidSelectElem.options[pyramidSelectElem.selectedIndex].text;
             const selectedPattern = document.getElementById('patternSelect').value;
             const hookType = document.getElementById('hookSelect').value;
 
@@ -146,6 +155,7 @@
             const progressText = document.getElementById('progressText');
             const resultSection = document.getElementById('resultSection');
             const outputContent = document.getElementById('outputContent');
+            const selectionSummary = document.getElementById('selectionSummary');
             const errorSection = document.getElementById('errorSection');
             const errorMessageText = document.getElementById('errorMessageText');
 
@@ -167,25 +177,39 @@
                 }
             }, 300);
 
-            const systemPrompt = `You are an expert TikTok short-form video scriptwriter and master sales copywriter. Generate an engaging, high-converting speaking script in Burmese for a 30 to 60-second TikTok video based on what is being sold (topic/product): "${topic}", target group: "${targetGroup || 'General'}", targeted to Perfect Customer: "${targetCustomer || 'General'}", Buyer Awareness Stage: "${pyramidStage}", Pattern: "${selectedPattern}", and Hook Style: "${hookType}".
+            const systemPrompt = `You are a professional TikTok short-form video scriptwriter and master sales copywriter in Myanmar. 
+Generate ONE single, comprehensive, detailed, emotional, and high-converting speaking script in natural Burmese for a 60 to 90-second TikTok video. 
 
-CRITICAL FORMATTING INSTRUCTION: You must strictly divide the output into clear sections using the exact following tags and headings, focusing on advanced sales psychology, conversion rates, and consumer pain points:
+CRITICAL FORMATTING INSTRUCTION: 
+Do not provide multiple options. Write out ONE complete, thorough, rich, and conversational script. Strictly divide the output into clear sections using the exact following tags and headings, and include practical acting/video tips at the end:
+
 ---
 **[Hook Section]**
-(Write a powerful hook with camera/screen direction notes in brackets)
+(Write one powerful, highly engaging opening line based on the selected hook style that directly targets the audience's pain point)
 
 **[Knowledge + Feeling Section]**
-(Write deep sales knowledge, consumer psychology, and emotional empathy connection)
+(Write deep sales knowledge, consumer psychology, pain points, and strong emotional empathy connection in multiple conversational paragraphs as if speaking directly to a friend)
 
 **[Result Section]**
-(Write clear, life-changing outcomes, conversion boosts, and practical results)
+(Write clear, life-changing outcomes, conversion boosts, practical value, and satisfying results)
 
 **[CTA Section]**
-(Write a precise, high-converting call to action)
----
-Keep sentences punchy, natural, conversational, and extremely easy to read on camera. Do not add extra conversational filler outside of these sections.`;
+(Write a precise, high-converting call to action that urges viewers to take immediate action)
 
-            const userQuery = `Product/Topic: ${topic}`;
+---
+**Script အကြံပြုချက် -**
+* **Video အမူအရာ:** (Provide specific acting or expression guidelines for the creator)
+* **စာတန်း (Caption):** (Provide a catchy text overlay/caption idea for the video)
+---
+
+Keep sentences punchy, natural, conversational, and extremely easy to read on camera. Do not summarize; write out the full spoken script.`;
+
+            const userQuery = `ရောင်းချမည့်အရာ (Product/Topic): ${topic}
+ပစ်မှတ်အုပ်စု (Target Group): ${targetGroup || 'General'}
+သတ်မှတ်ထားသော ဖောက်သည် (Perfect Customer): ${targetCustomer || 'General'}
+ဝယ်ယူသူ၏အသိအမြင်အဆင့် (Buyer Awareness Stage): ${pyramidStage}
+အသုံးပြုမည့်ပုံစံ (Content Writing Pattern): ${selectedPattern}
+အစပျိုးစကားပုံစံ (Hook Style): ${hookType}`;
 
             let success = false;
             let text = "";
@@ -201,7 +225,7 @@ Keep sentences punchy, natural, conversational, and extremely easy to read on ca
                         'X-Title': 'Content Mastery App'
                     },
                     body: JSON.stringify({
-                        model: "google/gemini-2.5-flash",
+                        model: "google/gemini-3.5-flash-lite",
                         messages: [
                             { role: "system", content: systemPrompt },
                             { role: "user", content: userQuery }
@@ -233,7 +257,7 @@ Keep sentences punchy, natural, conversational, and extremely easy to read on ca
                 }
             } catch (error) {
                 if (error.message.includes('Failed to fetch')) {
-                    errorMessage = "အင်တာနက်ချိတ်ဆက်မှု မရှိပါ သို့မဟုတ် API ကို လှမ်းခေါ်ခွင့် မရပါ။";
+                    errorMessage = "အင်တာနက်ချိတ်ဆက်မှု မရှိပါ သို့မဟုတ် API ကို လှမ်းခွင့် မရပါ။";
                 } else {
                     errorMessage = error.message;
                 }
@@ -246,6 +270,14 @@ Keep sentences punchy, natural, conversational, and extremely easy to read on ca
                 progressPercent.innerText = '100%';
                 progressText.innerText = 'ပြီးစီးပါပြီ!';
                 
+                // Display user selection summary header before script
+                selectionSummary.innerHTML = `
+                    <div class="font-bold text-sky-400 mb-1">📋 အသုံးပြုထားသော ရွေးချယ်မှုများ:</div>
+                    <div>• <b>ရောင်းမည့်အရာ:</b> ${topic}</div>
+                    <div>• <b>Hook Style:</b> ${hookType} | <b>Pattern:</b> ${selectedPattern}</div>
+                    <div>• <b>Target Group:</b> ${targetGroup || 'General'} | <b>Pyramid:</b> ${pyramidText}</div>
+                `;
+
                 setTimeout(() => {
                     loading.classList.add('hidden');
                     outputContent.innerText = text;
@@ -262,7 +294,7 @@ Keep sentences punchy, natural, conversational, and extremely easy to read on ca
         }
 
         function copyContent() {
-            const content = document.getElementById('outputContent').innerText;
+            const content = document.getElementById('selectionSummary').innerText + "\n\n" + document.getElementById('outputContent').innerText;
             const textArea = document.createElement("textarea");
             textArea.value = content;
             document.body.appendChild(textArea);
@@ -274,3 +306,4 @@ Keep sentences punchy, natural, conversational, and extremely easy to read on ca
     </script>
 </body>
 </html>
+
