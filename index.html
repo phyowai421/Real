@@ -1,205 +1,29 @@
-<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
-<html lang="my">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iPhone Settings Content Writer App</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-900 text-slate-100 min-h-screen p-4 sm:p-6 flex items-center justify-center">
-    <div class="max-w-2xl w-full mx-auto">
-        
-        <header class="text-center mb-6">
-            <h1 class="text-2xl sm:text-3xl font-bold text-sky-400 mb-1">Content Creator Version</h1>
-            <p class="text-slate-400 text-sm">TikTok ဗီဒီယိုအတွက် အပုဒ်ခွဲထားသော တိုက်ရိုက်ပြောဆိုနိုင်သော Script ထုတ်လုပ်ပါ</p>
-        </header>
-
-        <main class="bg-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl border border-slate-700 space-y-4">
-            <!-- Moved "ဘာရောင်းမှာလဲ" to the very top -->
-            <div>
-                <label class="block text-sm font-medium mb-2 text-slate-300" for="topicInput">ဘာရောင်းမှာလဲ</label>
-                <input type="text" id="topicInput" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-100 focus:outline-none focus:border-sky-500" placeholder="ဥပမာ - အိုင်ဖုန်း ဘက်ထရီ၊ အက်ဆက်ဆီရီ စသည်ဖြင့်">
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium mb-2 text-slate-300" for="hookSelect">Hook</label>
-                <select id="hookSelect" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-100 focus:outline-none focus:border-sky-500">
-                    <option value="Problem Hook">Problem Hook</option>
-                    <option value="Question Hook">Question Hook</option>
-                    <option value="Shock Hook">Shock Hook</option>
-                    <option value="Story Hook">Story Hook</option>
-                    <option value="Result Hook">Result Hook</option>
-                    <option value="Secret Hook">Secret Hook</option>
-                    <option value="Mistake Hook">Mistake Hook</option>
-                    <option value="Point Tip Hook">Point Tip Hook</option>
-                </select>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium mb-2 text-slate-300" for="targetGroupInput">Target Group (ပစ်မှတ်ထားသော အုပ်စု)</label>
-                <input type="text" id="targetGroupInput" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-100 focus:outline-none focus:border-sky-500" placeholder="ဥပမာ - ကျောင်းသားများ၊ ရုံးဝန်ထမ်းများ၊ Game ဆော့သူများ">
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium mb-2 text-slate-300" for="targetInput">Perfect Customer (Target Audience) သတ်မှတ်ရန်</label>
-                <input type="text" id="targetInput" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-100 focus:outline-none focus:border-sky-500" placeholder="ဥပမာ - Game ဆော့သူများ၊ အပြင်သွားများသော Sale ဝန်ထမ်းများ">
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium mb-2 text-slate-300" for="patternSelect">Content Writing Pattern ရွေးချယ်ရန်</label>
-                <select id="patternSelect" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-100 focus:outline-none focus:border-sky-500">
-                    <option value="Knowledge + Feeling + Result + CTA">Knowledge + Feeling + Result + CTA (မူလစံနှုန်း)</option>
-                    <option value="Story + Feeling + Result + CTA">Story + Feeling + Result + CTA</option>
-                    <option value="Knowledge + Story + Result + CTA">Knowledge + Story + Result + CTA</option>
-                    <option value="Action + Story + လက်တွေ့နည်းလမ်း အကြံပေး + CTA">Action + Story + လက်တွေ့နည်းလမ်း အကြံပေး + CTA</option>
-                    <option value="Action + Result + အာမခံချက် + CTA">Action + Result + အာမခံချက် + CTA</option>
-                    <option value="Action + Feeling + အကြံပေး + CTA">Action + Feeling + အကြံပေး + CTA</option>
-                </select>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium mb-4 text-slate-300 text-center">Chet Holmes's Buyer's Pyramid (ဝယ်ယူသူ၏ အသိအမြင်အဆင့်)</label>
-                
-                <!-- Pyramid Visualization (Enhanced 3D Look) -->
-                <div class="mb-6 drop-shadow-[0_10px_15px_rgba(0,0,0,0.4)] cursor-default select-none">
-                    <div class="relative w-full max-w-[320px] mx-auto h-[240px] flex flex-col [clip-path:polygon(30%_0%,70%_0%,100%_100%,0%_100%)] rounded-t-xl bg-slate-800 transition-all duration-300">
-                        <!-- 3% (Buying Now) -->
-                        <div class="flex-1 w-full bg-gradient-to-b from-rose-400 to-rose-600 flex items-center justify-center text-white text-[11px] sm:text-xs font-bold border-b border-rose-300/30 hover:brightness-110 transition-all group">
-                            <span class="group-hover:scale-110 transition-transform duration-200 drop-shadow-md">3% (Buying Now)</span>
-                        </div>
-                        <!-- 7% (Open to it) -->
-                        <div class="flex-1 w-full bg-gradient-to-b from-orange-400 to-orange-600 flex items-center justify-center text-white text-[11px] sm:text-xs font-bold border-b border-orange-300/30 hover:brightness-110 transition-all group">
-                            <span class="group-hover:scale-110 transition-transform duration-200 drop-shadow-md">7% (Open to it)</span>
-                        </div>
-                        <!-- 30% (Not Thinking) -->
-                        <div class="flex-1 w-full bg-gradient-to-b from-amber-400 to-amber-600 flex items-center justify-center text-white text-[11px] sm:text-xs font-bold border-b border-amber-300/30 hover:brightness-110 transition-all group">
-                            <span class="group-hover:scale-110 transition-transform duration-200 drop-shadow-md">30% (Not Thinking)</span>
-                        </div>
-                        <!-- 30% (Think Not Interested) -->
-                        <div class="flex-1 w-full bg-gradient-to-b from-sky-400 to-sky-600 flex items-center justify-center text-white text-[11px] sm:text-xs font-bold border-b border-sky-300/30 hover:brightness-110 transition-all group">
-                            <span class="group-hover:scale-110 transition-transform duration-200 drop-shadow-md">30% (Think Not Interested)</span>
-                        </div>
-                        <!-- 30% (Definitely Not) -->
-                        <div class="flex-1 w-full bg-gradient-to-b from-slate-500 to-slate-700 flex items-center justify-center text-white text-[11px] sm:text-xs font-bold hover:brightness-110 transition-all group">
-                            <span class="group-hover:scale-110 transition-transform duration-200 drop-shadow-md">30% (Definitely Not)</span>
-                        </div>
-                    </div>
-                </div>
-
-                <select id="pyramidSelect" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-100 focus:outline-none focus:border-sky-500 mt-2">
-                    <option value="3% Buying Now (ချက်ချင်းဝယ်မည့်သူ - Direct Offer/Urgency ကို အဓိကထားပါ)">3% - ချက်ချင်းဝယ်မည့်သူ (Buying Now)</option>
-                    <option value="7% Open to it (စဉ်းစားလေ့လာနေသူ - အချက်အလက်နှင့် အကျိုးကျေးဇူးကို အဓိကထားပါ)">7% - စဉ်းစား/လေ့လာနေသူ (Open to it)</option>
-                    <option value="30% Not thinking about it (ဝယ်ဖို့မတွေးထားသေးသူ - ပြဿနာကို သတိထားမိအောင် ဆွပေးပါ)">30% - ဝယ်ဖို့မတွေးထားသေးသူ (Not thinking about it)</option>
-                    <option value="30% Don't think they are interested (စိတ်မဝင်စားဘူးလို့ ထင်နေသူ - မသိသေးတဲ့ ဆိုးကျိုးတွေကို ထောက်ပြပါ)">30% - စိတ်မဝင်စားဘူးလို့ ထင်နေသူ (Don't think they are interested)</option>
-                    <option value="30% Know they aren't interested (လုံးဝစိတ်မဝင်စားသူ - ဖျော်ဖြေရေး သို့မဟုတ် ဗဟုသုတသက်သက်ဖြင့်သာ ချဥ်းကပ်ပါ)">30% - လုံးဝစိတ်မဝင်စားသူ (Definitely not interested)</option>
-                </select>
-            </div>
-
-            <button onclick="generateContent()" id="genBtn" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-medium py-3 px-4 rounded-xl transition duration-200 shadow-lg mt-6">
-                TikTok Script ထုတ်လုပ်မည်
-            </button>
-
-            <!-- Progress Bar Section -->
-            <div id="loading" class="hidden space-y-2 my-4">
-                <div class="flex justify-between text-xs text-sky-400 font-medium">
-                    <span id="progressText">TikTok Script ရေးသားနေပါပြီ...</span>
-                    <span id="progressPercent">0%</span>
-                </div>
-                <div class="w-full bg-slate-900 rounded-full h-2.5 overflow-hidden border border-slate-700">
-                    <div id="progressBar" class="bg-sky-500 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
-                </div>
-            </div>
-
-            <div id="resultSection" class="hidden mt-6 space-y-4">
-                <div class="flex justify-between items-center">
-                    <h2 class="font-bold text-lg text-emerald-400">ထွက်လာသော TikTok Script:</h2>
-                    <button onclick="copyContent()" class="bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-200 transition">Copy ကူးမည်</button>
-                </div>
-                <div id="outputContent" class="bg-slate-900 border border-slate-700 rounded-xl p-4 text-slate-200 text-sm whitespace-pre-line leading-relaxed select-all"></div>
-            </div>
-        </main>
-    </div>
-
-    <script>
-        const apiKey = "";
-
-        async function generateContent() {
-            const topic = document.getElementById('topicInput').value.trim();
-            const targetGroup = document.getElementById('targetGroupInput').value.trim();
-            const targetCustomer = document.getElementById('targetInput').value.trim();
-            const pyramidStage = document.getElementById('pyramidSelect').value;
-            const selectedPattern = document.getElementById('patternSelect').value;
-            const hookType = document.getElementById('hookSelect').value;
-
-            if (!topic) {
-                alert("ကျေးဇူးပြု၍ ဘာရောင်းမှာလဲဆိုတာကို ထည့်သွင်းပေးပါ။");
-                return;
-            }
-
-            const btn = document.getElementById('genBtn');
-            const loading = document.getElementById('loading');
-            const progressBar = document.getElementById('progressBar');
-            const progressPercent = document.getElementById('progressPercent');
-            const progressText = document.getElementById('progressText');
-            const resultSection = document.getElementById('resultSection');
-            const outputContent = document.getElementById('outputContent');
-
-            btn.disabled = true;
-            loading.classList.remove('hidden');
-            resultSection.classList.add('hidden');
-
-            // Simulate Progress Bar
-            let progress = 10;
-            progressBar.style.width = progress + '%';
-            progressPercent.innerText = progress + '%';
-
-            const progressInterval = setInterval(() => {
-                if (progress < 90) {
-                    progress += Math.floor(Math.random() * 15) + 5;
-                    if (progress > 90) progress = 90;
-                    progressBar.style.width = progress + '%';
-                    progressPercent.innerText = progress + '%';
+if (!res.ok) {
+                    let errorDetails = `HTTP Error Code: ${res.status}`;
+                    try {
+                        const errorData = await res.json();
+                        if (errorData.error && errorData.error.message) {
+                            errorDetails += `\nအကြောင်းရင်း: ${errorData.error.message}`;
+                        }
+                    } catch (e) {
+                        errorDetails += `\nအကြောင်းရင်း: ${res.statusText}`;
+                    }
+                    throw new Error(errorDetails);
                 }
-            }, 300);
 
-            const systemPrompt = `You are an expert TikTok short-form video scriptwriter for iPhone users. Generate the exact speaking script in Burmese for a 30 to 60-second TikTok video based on what is being sold (topic/product), target group, targeted specifically to the provided Perfect Customer, following this precise structural pattern: "${selectedPattern}", and utilizing the hook style: "${hookType}".
+                const result = await res.json();
+                text = result.choices?.[0]?.message?.content;
 
-FORMATTING RULE: Break the script down clearly into paragraphs/sections (such as Hook, Video Pattern/Body, and CTA) using appropriate spacing and paragraph breaks so that it is extremely easy to read on camera. Keep sentences punchy, conversational, and straight to the point.`;
-
-            const userQuery = `Product/Topic (ဘာရောင်းမှာလဲ): ${topic}, Target Group: ${targetGroup || 'General'}, Perfect Customer/Target Audience: ${targetCustomer || 'General iPhone Users'}, Buyer Awareness Stage (Chet Holmes Pyramid): ${pyramidStage}, Pattern: ${selectedPattern}, Hook Style: ${hookType}`;
-
-            let success = false;
-            let text = "";
-            let attempts = 0;
-            const delays = [1000, 2000, 4000, 8000, 16000];
-
-            while (!success && attempts < 5) {
-                try {
-                    const response = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-                    const res = await fetch(response, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            contents: [{ parts: [{ text: userQuery }] }],
-                            systemInstruction: { parts: [{ text: systemPrompt }] }
-                        })
-                    });
-
-                    if (!res.ok) throw new Error('API request failed');
-
-                    const result = await res.json();
-                    text = result.candidates?.[0]?.content?.parts?.[0]?.text;
-
-                    if (text) {
-                        success = true;
-                    } else {
-                        throw new Error('No text returned');
-                    }
-                } catch (error) {
-                    attempts++;
-                    if (attempts < 5) {
-                        await new Promise(res => setTimeout(res, delays[attempts - 1]));
-                    }
+                if (text) {
+                    success = true;
+                } else {
+                    throw new Error('API မှ စာသားပြန်မလာပါ။ (No text returned)');
+                }
+            } catch (error) {
+                if (error.message.includes('Failed to fetch')) {
+                    errorMessage = "အင်တာနက်ချိတ်ဆက်မှု မရှိပါ သို့မဟုတ် API ကို လှမ်းခေါ်ခွင့် မရပါ။";
+                } else {
+                    errorMessage = error.message;
                 }
             }
 
@@ -219,7 +43,9 @@ FORMATTING RULE: Break the script down clearly into paragraphs/sections (such as
             } else {
                 loading.classList.add('hidden');
                 btn.disabled = false;
-                alert("ဝန်ဆောင်မှု ချို့ယွင်းနေပါသည်။ ကျေးဇူးပြု၍ ခဏနေမှ ထပ်ကြိုးစားပါ။");
+                
+                errorMessageText.innerText = errorMessage;
+                errorSection.classList.remove('hidden');
             }
         }
 
@@ -236,8 +62,3 @@ FORMATTING RULE: Break the script down clearly into paragraphs/sections (such as
     </script>
 </body>
 </html>
-
-
-
-
-
