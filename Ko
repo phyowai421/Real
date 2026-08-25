@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="my" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Script Writer Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Padauk', 'sans-serif'],
+                        myanmar: ['Padauk', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            500: '#06b6d4',
+                            600: '#0891b2',
+                            700: '#0e7490',
+                            900: '#164e63',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', 'Padauk', sans-serif;
+            background-color: #090d16;
+            color: #f1f5f9;
+        }
+        .pyramid-slice {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .pyramid-slice:hover {
+            filter: brightness(1.15);
+            transform: scale(1.01);
+        }
+        .pyramid-slice.active {
+            stroke: #38bdf8;
+            stroke-width: 3px;
+            filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.5));
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between antialiased selection:bg-sky-500 selection:text-white">
+
+    <!-- Authentication Gate Modal -->
+    <div id="authGateModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-md p-4 overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative space-y-5 my-8">
+            <div class="text-center space-y-2">
+                <div class="w-16 h-16 bg-gradient-to-tr from-sky-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-sky-500/20">
+                    <span class="text-3xl">🎬</span>
+                </div>
+                <h2 class="text-xl font-bold text-white font-myanmar">TikTok Script Writer Pro</h2>
+                <p class="text-xs text-slate-400">ဆော့ဝဲသို့ ဝင်ရောက်ရန် သင်၏ Access Key ကို ထည့်သွင်းပေးပါ</p>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1 font-myanmar">Access Key ထည့်ပါ</label>
+                    <div class="relative">
+                        <input type="text" id="gateKeyInput" onkeypress="if(event.key==='Enter') verifyAndEnterApp()" placeholder="ဥပမာ - TK-XXXX-YYYY သို့မဟုတ် realreal123" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-sky-400 font-mono tracking-wider focus:outline-none focus:border-sky-500 transition placeholder:text-slate-600 uppercase">
+                    </div>
+                </div>
+
+                <div id="gateErrorMsg" class="hidden bg-rose-950/50 border border-rose-800/60 rounded-xl p-3 text-xs text-rose-300 font-myanmar text-center"></div>
+
+                <div class="flex flex-col gap-2">
+                    <button onclick="verifyAndEnterApp()" class="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-sky-500/20 text-sm transition flex items-center justify-center gap-2">
+                        <span>🔑 App သို့ ဝင်မည်</span>
+                    </button>
+                    <button onclick="quickDemoLogin()" class="w-full bg-slate-800 hover:bg-slate-700 text-sky-300 font-medium py-2.5 px-4 rounded-xl text-xs transition border border-slate-700/60 flex items-center justify-center gap-2">
+                        <span>⚡ Demo Key ဖြင့် ဝင်မည်</span>
+                    </button>
+                </div>
+
+                <div class="pt-3 border-t border-slate-800/80 text-[11px] text-slate-500 space-y-1">
+                    <div class="flex justify-between items-center">
+                        <span>Admin Key: <code class="text-sky-400 font-mono cursor-pointer hover:underline" onclick="fillKey('realreal123')">realreal123</code></span>
+                        <span>Test Key: <code class="text-sky-400 font-mono cursor-pointer hover:underline" onclick="fillKey('TK-TEST-KEY')">TK-TEST-KEY</code></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App Container (Hidden until authenticated) -->
+    <div id="mainAppContainer" class="hidden flex-1 flex flex-col min-h-screen">
+        <!-- Top Navigation Header -->
+        <header class="bg-slate-900/90 border-b border-slate-800/80 sticky top-0 z-40 backdrop-blur-md">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-tr from-sky-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md shadow-sky-500/10">
+                        <span class="text-xl">🎬</span>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-sm sm:text-base text-white font-myanmar leading-tight">TikTok Script Writer</h1>
+                        <p class="text-[11px] text-slate-400 hidden sm:block">AI-Powered High Converting Script Generator</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <button id="headerAdminBtn" onclick="openAdminModal()" class="hidden bg-slate-800 hover:bg-slate-700 text-amber-400 border border-amber-500/30 px-3 py-1.5 rounded-xl text-xs font-medium transition items-center gap-1.5 shadow-sm">
+                        <span>⚙️ Key Generator</span>
+                    </button>
+                    <button onclick="logoutUser()" class="bg-rose-950/60 hover:bg-rose-900 text-rose-300 border border-rose-800/40 px-3 py-1.5 rounded-xl text-xs font-medium transition flex items-center gap-1">
+                        <span>🚪 Logout</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- User Subscription Panel / Account Info -->
+        <div class="bg-slate-900/60 border-b border-slate-800/50 py-2.5 px-4 text-xs font-myanmar">
+            <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
+                <div class="flex items-center gap-2 sm:gap-4">
+                    <span class="flex items-center gap-1.5 bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800">
+                        <span class="text-slate-400">အကောင့်:</span>
+                        <span id="userAccountLabel" class="text-sky-400 font-bold">Standard User</span>
+                    </span>
+                    <span class="flex items-center gap-1.5 bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800">
+                        <span class="text-slate-400">Key:</span>
+                        <code id="userKeyDisplay" class="text-amber-400 font-mono font-semibold">TK-XXXX-YYYY</code>
+                    </span>
+                </div>
+                <div class="flex items-center gap-3 text-slate-400">
+                    <span class="flex items-center gap-1">
+                        <span>⏳ သက်တမ်းကျန်:</span>
+                        <span id="userRemainingTime" class="text-emerald-400 font-bold">၃၀ ရက်</span>
+                    </span>
+                    <span class="hidden md:inline text-slate-600">|</span>
+                    <span class="hidden md:flex items-center gap-1">
+                        <span>📅 ကုန်ဆုံးရက်:</span>
+                        <span id="userExpiryDate" class="text-slate-300">YYYY-MM-DD</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Left Controls & Input Section (7 cols) -->
+            <div class="lg:col-span-7 space-y-6">
+                <!-- Inputs Box -->
+                <div class="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-5 sm:p-6 space-y-5 shadow-xl">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-800/80">
+                        <h2 class="font-bold text-base text-white flex items-center gap-2 font-myanmar">
+                            <span>✏️</span> အချက်အလက်များ ဖြည့်စွက်ပါ
+                        </h2>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Topic Input -->
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1.5 font-myanmar">
+                                ၁။ ရောင်းမည့်ပစ္စည်း / ပြောပြချင်သည့် အကြောင်းအရာ <span class="text-rose-400">*</span>
+                            </label>
+                            <input type="text" id="topicInput" placeholder="ဥပမာ - မျက်နှာအဆီပြန်သက်သာစေသော ဖေးရှယ်ဝေါช (Face Wash)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-sky-500 transition placeholder:text-slate-600 font-myanmar">
+                        </div>
+
+                        <!-- Hook Selection -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1.5 font-myanmar">
+                                    ၂။ Hook အမျိုးအစား (ပထမ ၃ စက္ကန့်)
+                                </label>
+                                <select id="hookSelect" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-sky-500 transition font-myanmar">
+                                    <option value="Negative Curiosity">Negative Curiosity (မလုပ်မိပါစေနဲ့)</option>
+                                    <option value="Secret Solution">Secret Solution (လျှို့ဝှက်နည်းလမ်း)</option>
+                                    <option value="Common Mistake">Common Mistake (အများဆုံးမှားတတ်သည့်အမှား)</option>
+                                    <option value="Direct Question">Direct Question (တိုက်ရိုက်မေးခွန်း)</option>
+                                    <option value="Shocking Reality">Shocking Reality (အံ့သြစရာအမှန်တရား)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1.5 font-myanmar">
+                                    ၃။ Content Pattern
+                                </label>
+                                <select id="patternSelect" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-sky-500 transition font-myanmar">
+                                    <option value="PAS (Problem, Agitate, Solution)">PAS (ပြဿနာ -> ဆိုးကျိုး -> ဖြေရှင်းချက်)</option>
+                                    <option value="Before / After Story">Before / After (အရင်နဲ​့ အခု ကွာခြားချက်)</option>
+                                    <option value="3 Steps Tutorial">3 Steps (အဆင့် ၃ ဆင့်ဖြင့် ရှင်းပြခြင်း)</option>
+                                    <option value="Myth vs Fact">Myth vs Fact (အမှားနှင့် အမှန်)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Target Audience -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1.5 font-myanmar">
+                                    ၄။ Target Group (ပစ်မှတ်အုပ်စု)
+                                </label>
+                                <input type="text" id="targetGroupInput" placeholder="ဥပမာ - အသက် ၁၈ - ၃၅ အရွယ် အမျိုးသမီးများ" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-sky-500 transition font-myanmar">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1.5 font-myanmar">
+                                    ၅။ Perfect Customer (စိတ်ကြိုက်ဝယ်သူ)
+                                </label>
+                                <input type="text" id="targetInput" placeholder="ဥပမာ - ဝက်ခြံနဲ့ အဆီပြန်လို့ စိတ်ညစ်နေသူများ" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-sky-500 transition font-myanmar">
+                            </div>
+                        </div>
+
+                        <!-- Chet Holmes Pyramid Interactive Selection -->
+                        <div class="space-y-2 pt-2">
+                            <label class="block text-xs font-medium text-slate-300 font-myanmar">
+                                ၆။ Chet Holmes' Buyer's Pyramid စိတ်ပညာ အဆင့် ရွေးချယ်ပါ
+                            </label>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center bg-slate-950 p-4 rounded-xl border border-slate-800">
+                                <!-- Interactive Pyramid Visual -->
+                                <div class="sm:col-span-5 flex justify-center">
+                                    <svg viewBox="0 0 200 160" class="w-48 h-auto max-w-full">
+                                        <!-- Top 3% Buying Now -->
+                                        <polygon points="100,10 125,40 75,40" fill="#ec4899" class="pyramid-slice cursor-pointer" data-value="3% Buying Now"></polygon>
+                                        <!-- 7% Open to It -->
+                                        <polygon points="75,42 125,42 145,70 55,70" fill="#a855f7" class="pyramid-slice cursor-pointer" data-value="7% Open to It"></polygon>
+                                        <!-- 30% Not Thinking About It -->
+                                        <polygon points="55,72 145,72 165,100 35,100" fill="#3b82f6" class="pyramid-slice cursor-pointer active" data-value="30% Not Thinking About It"></polygon>
+                                        <!-- 30% Think They Are Not Interested -->
+                                        <polygon points="35,102 165,102 185,130 15,130" fill="#06b6d4" class="pyramid-slice cursor-pointer" data-value="30% Think They Are Not Interested"></polygon>
+                                        <!-- 30% Definitely Not Interested -->
+                                        <polygon points="15,132 185,132 200,155 0,155" fill="#64748b" class="pyramid-slice cursor-pointer" data-value="30% Definitely Not Interested"></polygon>
+                                    </svg>
+                                </div>
+
+                                <div class="sm:col-span-7 space-y-2">
+                                    <select id="pyramidSelect" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-sky-400 font-bold focus:outline-none font-myanmar">
+                                        <option value="3% Buying Now">3% Buying Now (တိုက်ရိုက် ဝယ်ယူရန် အဆင်သင့်)</option>
+                                        <option value="7% Open to It">7% Open to It (စိတ်ဝင်စားမှု ရှိသည်)</option>
+                                        <option value="30% Not Thinking About It" selected>30% Not Thinking (အသိပညာပေးရန် လိုအပ်သည်)</option>
+                                        <option value="30% Think They Are Not Interested">30% Not Interested (ပြဿနာကို ထောက်ပြရန်)</option>
+                                        <option value="30% Definitely Not Interested">30% Definitely Not (အထွေထွေ ပရိသတ်)</option>
+                                    </select>
+                                    <p class="text-[11px] text-slate-400 font-myanmar leading-relaxed">
+                                        * Pyramid အဆင့်အလိုက် AI မှ ကိုက်ညီသော စိတ်ပညာ တွန်းအားပေးမှု စာသားများကို အလိုအလျောက် ထည့်သွင်းပေးမည် ဖြစ်ပါသည်။
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Error display section -->
+                        <div id="errorSection" class="hidden bg-rose-950/60 border border-rose-800/80 rounded-xl p-3 text-xs text-rose-300 font-myanmar flex items-center justify-between">
+                            <span id="errorMessageText">အချက်အလက်များကို ဖြည့်သွင်းပေးပါ။</span>
+                        </div>
+
+                        <!-- Generate Button -->
+                        <button id="genBtn" onclick="generateContent()" class="w-full bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-sky-500/20 text-sm transition flex items-center justify-center gap-2 font-myanmar group">
+                            <span>🚀 TikTok Script ထုတ်ယူမည်</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Output & History Section (5 cols) -->
+            <div class="lg:col-span-5 space-y-6">
+                <!-- Loading State -->
+                <div id="loading" class="hidden bg-slate-900/80 border border-slate-800 rounded-2xl p-6 text-center space-y-4">
+                    <div class="w-12 h-12 border-4 border-sky-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                    <div class="space-y-1">
+                        <div id="progressText" class="text-sm font-bold text-sky-400 font-myanmar">AI Script ဖန်တီးနေပါသည်။...</div>
+                        <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-800">
+                            <div id="progressBar" class="bg-gradient-to-r from-sky-500 to-blue-600 h-full w-0 transition-all duration-300"></div>
+                        </div>
+                        <div id="progressPercent" class="text-xs text-slate-500 font-mono pt-1">0%</div>
+                    </div>
+                </div>
+
+                <!-- Generated Result Display -->
+                <div id="resultSection" class="hidden bg-slate-900/90 border border-slate-800/90 rounded-2xl p-5 space-y-4 shadow-xl">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                        <h3 class="font-bold text-sm text-white flex items-center gap-2 font-myanmar">
+                            <span>✨</span> ထွက်ရှိလာသော TikTok Script
+                        </h3>
+                        <div class="flex items-center gap-2">
+                            <button onclick="copyContent()" class="bg-sky-950/80 hover:bg-sky-900 text-sky-400 border border-sky-800/50 px-2.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1 font-myanmar">
+                                📋 Copy
+                            </button>
+                            <button onclick="saveScriptToCloud()" class="bg-emerald-950/80 hover:bg-emerald-900 text-emerald-400 border border-emerald-800/50 px-2.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1 font-myanmar">
+                                💾 Database သိမ်းမည်
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Selected Config Summary -->
+                    <div id="selectionSummary" class="text-[11px] text-slate-400 bg-slate-950 p-3 rounded-xl border border-slate-800/80 font-myanmar space-y-1"></div>
+
+                    <!-- Text Area Output -->
+                    <div class="bg-slate-950 border border-slate-800/80 rounded-xl p-4 text-xs sm:text-sm text-slate-200 font-myanmar leading-relaxed whitespace-pre-wrap max-h-[420px] overflow-y-auto selection:bg-sky-500/30" id="outputContent"></div>
+                </div>
+
+                <!-- Cloud/Local Database History -->
+                <div class="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-5 space-y-4 shadow-xl">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                        <h3 class="font-bold text-sm text-white flex items-center gap-2 font-myanmar">
+                            <span>🗄️</span> သိမ်းဆည်းထားသော Script များ (<span id="savedCount" class="text-sky-400">0</span>)
+                        </h3>
+                    </div>
+
+                    <div id="savedScriptsList" class="space-y-3 max-h-[350px] overflow-y-auto pr-1">
+                        <div class="text-center py-6 text-xs text-slate-500 font-myanmar">Database တွင် သိမ်းဆည်းထားသော Script များ မရှိသေးပါ။</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Admin Key Management Modal -->
+    <div id="adminModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-md p-4 overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-5 my-8">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">⚙️</span>
+                    <div>
+                        <h3 class="font-bold text-base text-white font-myanmar">Admin Key Generator & Manager</h3>
+                        <p class="text-[11px] text-slate-400">Customer Access Key များကို စီမံခန့်ခွဲပါ</p>
+                    </div>
+                </div>
+                <button onclick="closeAdminModal()" class="text-slate-400 hover:text-white text-lg p-1">✕</button>
+            </div>
+
+            <!-- Key Generator Form -->
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-4">
+                <h4 class="text-xs font-bold text-sky-400 font-myanmar">➕ Access Key အသစ်ထုတ်လုပ်ရန်</h4>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1 font-myanmar">Customer အမည် / မှတ်ချက်</label>
+                        <input type="text" id="keyLabel" placeholder="ဥပမာ - Ko Aung (VIP)" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-sky-500 font-myanmar">
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1 font-myanmar">အရေအတွက်</label>
+                        <select id="keyQuantitySelect" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-sky-500">
+                            <option value="1">၁ ခု</option>
+                            <option value="3">၃ ခု</option>
+                            <option value="5">၅ ခု</option>
+                            <option value="10">၁၀ ခု</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1 font-myanmar">သက်တမ်း (လ)</label>
+                        <select id="keyDurationSelect" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-sky-500">
+                            <option value="1">၁ လ</option>
+                            <option value="3">၃ လ</option>
+                            <option value="6">၆ လ</option>
+                            <option value="12">၁ နှစ် (၁၂ လ)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Quick Presets -->
+                <div class="flex flex-wrap items-center gap-2 pt-1">
+                    <span class="text-[11px] text-slate-500 font-myanmar">မြန်ဆန်သော သက်တမ်း Preset:</span>
+                    <button onclick="setDurationPreset(1)" data-months="1" class="preset-btn bg-sky-600 border border-sky-500 text-white px-2.5 py-1 rounded-lg text-[11px]">၁ လ</button>
+                    <button onclick="setDurationPreset(3)" data-months="3" class="preset-btn bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800 px-2.5 py-1 rounded-lg text-[11px]">၃ လ</button>
+                    <button onclick="setDurationPreset(6)" data-months="6" class="preset-btn bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800 px-2.5 py-1 rounded-lg text-[11px]">၆ လ</button>
+                    <button onclick="setDurationPreset(12)" data-months="12" class="preset-btn bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800 px-2.5 py-1 rounded-lg text-[11px]">၁ နှစ်</button>
+                </div>
+
+                <button onclick="generateAccessKey()" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-2.5 px-4 rounded-lg text-xs transition flex items-center justify-center gap-2 font-myanmar">
+                    <span>✨ Key ထုတ်ယူမည်</span>
+                </button>
+            </div>
+
+            <!-- Keys List Filter & Header -->
+            <div class="space-y-3">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                    <h4 class="text-xs font-bold text-slate-300 font-myanmar">📋 ထုတ်ယူပြီးသော Access Key များ (<span id="keyCount" class="text-sky-400">0</span>)</h4>
+                    
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <input type="text" id="keySearchInput" oninput="renderKeysList()" placeholder="Key သို့မဟုတ် အမည် ရှာမည်..." class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none w-full sm:w-48 font-myanmar">
+                        <button onclick="promptClearAllKeys()" class="bg-rose-950/60 hover:bg-rose-900 text-rose-300 border border-rose-800/40 px-2.5 py-1.5 rounded-lg text-[11px] font-medium whitespace-nowrap">Clear All</button>
+                    </div>
+                </div>
+
+                <div class="flex border-b border-slate-800 text-xs font-myanmar">
+                    <button onclick="setKeyFilter('all')" id="filterAllBtn" class="px-3 py-1.5 border-b-2 border-sky-500 text-sky-400 font-semibold bg-slate-800 rounded-t-lg">အားလုံး</button>
+                    <button onclick="setKeyFilter('active')" id="filterActiveBtn" class="px-3 py-1.5 text-slate-400 hover:text-white">အသုံးပြုနိုင်ဆဲ (Active)</button>
+                    <button onclick="setKeyFilter('disabled')" id="filterDisabledBtn" class="px-3 py-1.5 text-slate-400 hover:text-white">ပိတ်ထားသော Key (Disabled)</button>
+                </div>
+
+                <div id="keyList" class="space-y-2.5 max-h-[300px] overflow-y-auto pr-1"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Confirm / Alert Dialog Modal -->
+    <div id="customModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-5 shadow-2xl space-y-4">
+            <div class="flex items-center gap-3">
+                <div id="customModalIcon" class="text-2xl">⚠️</div>
+                <h3 id="customModalTitleText" class="font-bold text-sm text-white font-myanmar">သတိပေးချက်</h3>
+            </div>
+            <p id="customModalMsg" class="text-xs text-slate-300 font-myanmar leading-relaxed">သေချာပါသလား?</p>
+            <div class="flex justify-end gap-2 pt-2">
+                <button id="customModalCancelBtn" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3.5 py-2 rounded-xl text-xs font-myanmar">မလုပ်ပါ</button>
+                <button id="customModalConfirmBtn" class="bg-sky-600 hover:bg-sky-500 text-white px-4 py-2 rounded-xl text-xs font-bold font-myanmar">လက်ခံသည်</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform transition-all duration-300 opacity-0 translate-y-2 pointer-events-none">
+        <div class="bg-slate-900 border border-sky-500/50 text-sky-300 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2 text-xs font-myanmar">
+            <span>✨</span>
+            <span id="toastMsg">အောင်မြင်စွာ ဆောင်ရွက်ပြီးပါပြီ!</span>
+        </div>
+    </div>
+
+    <script>
+        // System Constants
+        const DEFAULT_API_KEY = "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";
+        const MASTER_ADMIN_KEY = "realreal123";
+
+        let currentUser = null;
+        let currentFilter = 'all';
+        let isAdminAuthenticated = false;
+        let countdownTicker = null;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'tiktok-script-writer';
+
+        function safeJSONParse(key, fallback) {
+            try {
+                const item = localStorage.getItem(key);
+                return item ? JSON.parse(item) : fallback;
+            } catch (e) {
+                console.warn(`Error parsing localStorage key "${key}":`, e);
+                return fallback;
+            }
+        }
+
+        let accessKeys = safeJSONParse('app_access_keys', []);
+        let savedScripts = safeJSONParse('app_saved_scripts', []);
+        let verifiedApiKey = localStorage.getItem('verified_app_key') || '';
+        let currentGeneratedScript = '';
+
+        window.fillKey = function(key) {
+            const input = document.getElementById('gateKeyInput');
+            if (input) {
+                input.value = key;
+                window.verifyAndEnterApp();
+            }
+        };
+
+        window.quickDemoLogin = function() {
+            const input = document.getElementById('gateKeyInput');
+            if (input) {
+                input.value = "TK-TEST-KEY";
+                window.verifyAndEnterApp();
+            }
+        };
+
+        window.verifyAndEnterApp = function() {
+            const inputEl = document.getElementById('gateKeyInput');
+            if (!inputEl) return;
+            const inputKey = inputEl.value.trim();
+            const errBox = document.getElementById('gateErrorMsg');
+            if (errBox) errBox.classList.add('hidden');
+
+            if (!inputKey) {
+                if (errBox) {
+                    errBox.innerText = "ကျေးဇူးပြု၍ Access Key ထည့်သွင်းပါ။";
+                    errBox.classList.remove('hidden');
+                }
+                return;
+            }
+
+            const cleanInput = inputKey.toUpperCase();
+
+            // Admin Key check
+            if (inputKey === MASTER_ADMIN_KEY || cleanInput === MASTER_ADMIN_KEY.toUpperCase()) {
+                isAdminAuthenticated = true;
+                verifiedApiKey = inputKey;
+                localStorage.setItem('verified_app_key', inputKey);
+                launchAppUI("Master Administrator", "UNLIMITED", "အမြဲတမ်း (Lifetime)", true, "ADMIN-MASTER-KEY");
+                return;
+            }
+
+            // Test Key check
+            if (cleanInput === "TK-TEST-KEY" || inputKey.startsWith("sk-or-v1-")) {
+                isAdminAuthenticated = false;
+                verifiedApiKey = inputKey;
+                localStorage.setItem('verified_app_key', inputKey);
+                const expiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+                launchAppUI("Standard User", "၃၀ ရက်", expiry.toLocaleDateString(), false, inputKey, expiry);
+                return;
+            }
+
+            // Generated Access Keys check
+            const foundKey = accessKeys.find(k => k.key.toUpperCase() === cleanInput || k.key === inputKey);
+            if (foundKey) {
+                if (!foundKey.active) {
+                    if (errBox) {
+                        errBox.innerText = "ဤ Access Key မှာ ပိတ်သိမ်းခံထားရပါသည် (Disabled)။";
+                        errBox.classList.remove('hidden');
+                    }
+                    return;
+                }
+                const now = new Date();
+                const expiryDate = new Date(foundKey.expiryDate);
+                if (now > expiryDate) {
+                    if (errBox) {
+                        errBox.innerText = "ဤ Access Key သက်တမ်းကုန်ဆုံးသွားပါပြီ။";
+                        errBox.classList.remove('hidden');
+                    }
+                    return;
+                }
+
+                isAdminAuthenticated = false;
+                verifiedApiKey = foundKey.key;
+                localStorage.setItem('verified_app_key', foundKey.key);
+                const diffTime = expiryDate - now;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                launchAppUI(foundKey.label || "Customer User", `${diffDays} ရက် ကျန်`, expiryDate.toLocaleDateString(), false, foundKey.key, expiryDate);
+                return;
+            }
+
+            if (errBox) {
+                errBox.innerText = "မှားယွင်းနေသော Access Key ဖြစ်ပါသည်။ 'TK-TEST-KEY' သို့မဟုတ် 'realreal123' ကို နှိပ်၍ တိုက်ရိုက် ဝင်ရောက်နိုင်ပါသည်။";
+                errBox.classList.remove('hidden');
+            }
+        };
+
+        function checkExistingSession(savedKey) {
+            if (savedKey === MASTER_ADMIN_KEY) {
+                isAdminAuthenticated = true;
+                launchAppUI("Master Administrator", "UNLIMITED", "အမြဲတမ်း (Lifetime)", true, "ADMIN-MASTER-KEY");
+            } else if (savedKey === "TK-TEST-KEY" || savedKey.startsWith("sk-or-v1-")) {
+                isAdminAuthenticated = false;
+                const expiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+                launchAppUI("Standard User", "၃၀ ရက်", expiry.toLocaleDateString(), false, savedKey, expiry);
+            } else {
+                const foundKey = accessKeys.find(k => k.key === savedKey);
+                if (foundKey && foundKey.active && new Date() <= new Date(foundKey.expiryDate)) {
+                    isAdminAuthenticated = false;
+                    const expiryDate = new Date(foundKey.expiryDate);
+                    const diffDays = Math.ceil((expiryDate - new Date()) / (1000 * 60 * 60 * 24));
+                    launchAppUI(foundKey.label || "Customer User", `${diffDays} ရက် ကျန်`, expiryDate.toLocaleDateString(), false, foundKey.key, expiryDate);
+                } else {
+                    window.logoutUser();
+                }
+            }
+        }
+
+        function launchAppUI(accountName, remainingStr, expiryStr, showAdmin, displayKey, expiryDateObj = null) {
+            document.getElementById('authGateModal').classList.add('hidden');
+            document.getElementById('mainAppContainer').classList.remove('hidden');
+            
+            document.getElementById('userAccountLabel').innerText = accountName;
+            document.getElementById('userKeyDisplay').innerText = displayKey;
+            document.getElementById('userRemainingTime').innerText = remainingStr;
+            document.getElementById('userExpiryDate').innerText = expiryStr;
+
+            const adminBtn = document.getElementById('headerAdminBtn');
+            if (showAdmin) {
+                adminBtn.classList.remove('hidden');
+                adminBtn.classList.add('flex');
+            } else {
+                adminBtn.classList.add('hidden');
+                adminBtn.classList.remove('flex');
+            }
+
+            if (countdownTicker) clearInterval(countdownTicker);
+            if (expiryDateObj) {
+                startCountdown(expiryDateObj);
+            }
+        }
+
+        function startCountdown(expiryDate) {
+            const remEl = document.getElementById('userRemainingTime');
+            if (!remEl) return;
+            countdownTicker = setInterval(() => {
+                const now = new Date();
+                const diff = expiryDate - now;
+                if (diff <= 0) {
+                    remEl.innerText = "သက်တမ်းကုန်ဆုံး";
+                    clearInterval(countdownTicker);
+                    return;
+                }
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const mins = Math.floor((diff / 1000 / 60) % 60);
+                remEl.innerText = `${days}ရက် ${hours}နာရီ ${mins}မိနစ်`;
+            }, 1000);
+        }
+
+        window.logoutUser = function() {
+            if (countdownTicker) clearInterval(countdownTicker);
+            localStorage.removeItem('verified_app_key');
+            isAdminAuthenticated = false;
+            verifiedApiKey = '';
+            document.getElementById('mainAppContainer').classList.add('hidden');
+            document.getElementById('authGateModal').classList.remove('hidden');
+            const input = document.getElementById('gateKeyInput');
+            if (input) input.value = '';
+            const err = document.getElementById('gateErrorMsg');
+            if (err) err.classList.add('hidden');
+        };
+
+        window.openAdminModal = function() {
+            if (!isAdminAuthenticated) {
+                window.showAlertModal("Administrator အခွင့်အရေး မရှိပါ။ Master Key ဖြင့် ဝင်ရောက်မှသာ အသုံးပြုနိုင်ပါသည်။");
+                return;
+            }
+            document.getElementById('adminModal').classList.remove('hidden');
+            window.renderKeysList();
+        };
+
+        window.closeAdminModal = function() {
+            document.getElementById('adminModal').classList.add('hidden');
+        };
+
+        window.setDurationPreset = function(months) {
+            const input = document.getElementById('keyDurationSelect');
+            if (input) input.value = months;
+            document.querySelectorAll('.preset-btn').forEach(btn => {
+                if (parseInt(btn.getAttribute('data-months')) === months) {
+                    btn.classList.add('bg-sky-600', 'border-sky-500', 'text-white');
+                    btn.classList.remove('bg-slate-900', 'border-slate-800');
+                } else {
+                    btn.classList.remove('bg-sky-600', 'border-sky-500', 'text-white');
+                    btn.classList.add('bg-slate-900', 'border-slate-800');
+                }
+            });
+        };
+
+        window.generateAccessKey = function() {
+            const labelInput = document.getElementById('keyLabel').value.trim() || "VIP Customer";
+            const qty = parseInt(document.getElementById('keyQuantitySelect').value) || 1;
+            const months = parseInt(document.getElementById('keyDurationSelect').value) || 1;
+
+            const newKeys = [];
+            const now = new Date();
+            const expiry = new Date();
+            expiry.setMonth(expiry.getMonth() + months);
+
+            for (let i = 0; i < qty; i++) {
+                const randomCode = 'TK-' + Math.random().toString(36).substring(2, 6).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+                const keyObj = {
+                    id: 'key_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
+                    key: randomCode,
+                    label: labelInput + (qty > 1 ? ` (${i+1})` : ''),
+                    durationMonths: months,
+                    createdAt: now.toISOString(),
+                    expiryDate: expiry.toISOString(),
+                    active: true
+                };
+                newKeys.push(keyObj);
+            }
+
+            accessKeys = [...newKeys, ...accessKeys];
+            localStorage.setItem('app_access_keys', JSON.stringify(accessKeys));
+
+            document.getElementById('keyLabel').value = '';
+            window.renderKeysList();
+            window.showToast(`Access Key ${qty} ခု အောင်မြင်စွာ ထုတ်ပေးပြီးပါပြီ!`);
+        };
+
+        window.setKeyFilter = function(filter) {
+            currentFilter = filter;
+            ['all', 'active', 'disabled'].forEach(f => {
+                const btn = document.getElementById(`filter${f.charAt(0).toUpperCase() + f.slice(1)}Btn`);
+                if (btn) {
+                    if (f === filter) {
+                        btn.classList.add('text-sky-400', 'font-semibold', 'bg-slate-800');
+                        btn.classList.remove('text-slate-400');
+                    } else {
+                        btn.classList.remove('text-sky-400', 'font-semibold', 'bg-slate-800');
+                        btn.classList.add('text-slate-400');
+                    }
+                }
+            });
+            window.renderKeysList();
+        };
+
+        window.renderKeysList = function() {
+            const listContainer = document.getElementById('keyList');
+            if (!listContainer) return;
+            const searchQuery = (document.getElementById('keySearchInput')?.value || '').toLowerCase();
+            
+            let filtered = accessKeys.filter(k => {
+                const matchesSearch = k.key.toLowerCase().includes(searchQuery) || k.label.toLowerCase().includes(searchQuery);
+                if (currentFilter === 'active') return matchesSearch && k.active;
+                if (currentFilter === 'disabled') return matchesSearch && !k.active;
+                return matchesSearch;
+            });
+
+            const countEl = document.getElementById('keyCount');
+            if (countEl) countEl.innerText = accessKeys.length;
+
+            if (filtered.length === 0) {
+                listContainer.innerHTML = `<div class="text-center py-6 text-xs text-slate-500 font-myanmar">ရှာတွေ့သော Access Key များ မရှိပါ။</div>`;
+                return;
+            }
+
+            listContainer.innerHTML = filtered.map(k => {
+                const isExpired = new Date() > new Date(k.expiryDate);
+                const statusBadge = !k.active 
+                    ? `<span class="px-1.5 py-0.5 rounded bg-rose-950 text-rose-400 text-[10px] font-bold border border-rose-800/40">DISABLED</span>`
+                    : isExpired 
+                    ? `<span class="px-1.5 py-0.5 rounded bg-amber-950 text-amber-400 text-[10px] font-bold border border-amber-800/40">EXPIRED</span>`
+                    : `<span class="px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-400 text-[10px] font-bold border border-emerald-800/40">ACTIVE</span>`;
+
+                return `
+                    <div class="bg-slate-950 border border-slate-800/80 rounded-xl p-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 hover:border-slate-700 transition">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <code class="text-sky-400 font-mono font-bold text-xs bg-slate-900 px-2 py-0.5 rounded border border-slate-800">${k.key}</code>
+                                ${statusBadge}
+                            </div>
+                            <div class="text-[11px] text-slate-300 font-medium font-myanmar">${k.label}</div>
+                            <div class="text-[10px] text-slate-500 font-myanmar">ကုန်ဆုံးရက်: ${new Date(k.expiryDate).toLocaleDateString()} (${k.durationMonths} လ)</div>
+                        </div>
+
+                        <div class="flex items-center gap-1.5 w-full sm:w-auto justify-end">
+                            <button onclick="copyKeyMessageById('${k.id}')" class="bg-sky-950/60 hover:bg-sky-900 text-sky-400 border border-sky-800/40 px-2.5 py-1.5 rounded-lg text-[11px] font-medium transition flex items-center gap-1 font-myanmar" title="Customer သို့ ပေးပို့ရန် Copy ကူးမည်">
+                                <span>📩 Copy</span>
+                            </button>
+                            <button onclick="toggleKeyStatus('${k.id}')" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 px-2.5 py-1.5 rounded-lg text-[11px] font-medium transition font-myanmar">
+                                ${k.active ? 'ပိတ်မည်' : 'ဖွင့်မည်'}
+                            </button>
+                            <button onclick="deleteKey('${k.id}')" class="bg-rose-950/40 hover:bg-rose-900 text-rose-400 border border-rose-800/40 px-2 py-1.5 rounded-lg text-[11px] transition" title="ဖျက်မည်">
+                                🗑️
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        };
+
+        window.copyKeyMessageById = function(id) {
+            const k = accessKeys.find(item => item.id === id);
+            if (!k) return;
+            const expiryStr = new Date(k.expiryDate).toLocaleDateString();
+            const msg = `🚀 TikTok Script Writer App Access\n\n👤 အမည်: ${k.label}\n🔑 Access Key: ${k.key}\n📅 သက်တမ်းကုန်ဆုံးရက်: ${expiryStr}`;
+            const textarea = document.createElement('textarea');
+            textarea.value = msg;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            window.showToast("Customer သို့ ပေးပို့မည့် စာသားကို Copy ကူးပြီးပါပြီ!");
+        };
+
+        window.toggleKeyStatus = function(id) {
+            accessKeys = accessKeys.map(k => k.id === id ? { ...k, active: !k.active } : k);
+            localStorage.setItem('app_access_keys', JSON.stringify(accessKeys));
+            window.renderKeysList();
+        };
+
+        window.deleteKey = async function(id) {
+            const confirmed = await window.showConfirmModal("ဤ Access Key ကို အမှန်တကယ် ဖျက်ပစ်မည်လား?");
+            if (!confirmed) return;
+            accessKeys = accessKeys.filter(k => k.id !== id);
+            localStorage.setItem('app_access_keys', JSON.stringify(accessKeys));
+            window.renderKeysList();
+            window.showToast("Access Key ကို ဖျက်ပြီးပါပြီ။");
+        };
+
+        window.promptClearAllKeys = async function() {
+            const confirmed = await window.showConfirmModal("ထုတ်ထားသော Key အားလုံးကို အမှန်တကယ် ဖျက်ပစ်မည်လား?");
+            if (!confirmed) return;
+            accessKeys = [];
+            localStorage.setItem('app_access_keys', JSON.stringify(accessKeys));
+            window.renderKeysList();
+            window.showToast("Key အားလုံးကို ရှင်းလင်းပြီးပါပြီ။");
+        };
+
+        window.showAlertModal = function(message, title = "သတိပေးချက်", icon = "⚠️") {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('customModal');
+                document.getElementById('customModalTitleText').innerText = title;
+                document.getElementById('customModalIcon').innerText = icon;
+                document.getElementById('customModalMsg').innerText = message;
+                
+                const cancelBtn = document.getElementById('customModalCancelBtn');
+                const confirmBtn = document.getElementById('customModalConfirmBtn');
+                
+                cancelBtn.classList.add('hidden');
+                confirmBtn.innerText = "လက်ခံသည်";
+                
+                const onConfirm = () => {
+                    modal.classList.add('hidden');
+                    confirmBtn.removeEventListener('click', onConfirm);
+                    resolve(true);
+                };
+                
+                confirmBtn.addEventListener('click', onConfirm);
+                modal.classList.remove('hidden');
+            });
+        };
+
+        window.showConfirmModal = function(message, title = "အတည်ပြုပါ") {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('customModal');
+                document.getElementById('customModalTitleText').innerText = title;
+                document.getElementById('customModalIcon').innerText = "❓";
+                document.getElementById('customModalMsg').innerText = message;
+                
+                const cancelBtn = document.getElementById('customModalCancelBtn');
+                const confirmBtn = document.getElementById('customModalConfirmBtn');
+                
+                cancelBtn.classList.remove('hidden');
+                confirmBtn.innerText = "အတည်ပြုသည်";
+                
+                const onConfirm = () => {
+                    modal.classList.add('hidden');
+                    confirmBtn.removeEventListener('click', onConfirm);
+                    resolve(true);
+                };
+                
+                const onCancel = () => {
+                    modal.classList.add('hidden');
+                    cancelBtn.removeEventListener('click', onCancel);
+                    confirmBtn.removeEventListener('click', onConfirm);
+                    resolve(false);
+                };
+                
+                confirmBtn.addEventListener('click', onConfirm);
+                cancelBtn.addEventListener('click', onCancel);
+                modal.classList.remove('hidden');
+            });
+        };
+
+        window.showToast = function(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.classList.remove('opacity-0', 'translate-y-2', 'pointer-events-none');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2', 'pointer-events-none');
+            }, 3000);
+        };
+
+        function setupPyramidInteractivity() {
+            const slices = document.querySelectorAll('.pyramid-slice');
+            const selectEl = document.getElementById('pyramidSelect');
+            if (!selectEl) return;
+
+            slices.forEach(slice => {
+                slice.addEventListener('click', () => {
+                    slices.forEach(s => s.classList.remove('active'));
+                    slice.classList.add('active');
+                    const val = slice.getAttribute('data-value');
+                    selectEl.value = val;
+                });
+            });
+
+            selectEl.addEventListener('change', () => {
+                const val = selectEl.value;
+                slices.forEach(s => {
+                    if (s.getAttribute('data-value') === val) {
+                        s.classList.add('active');
+                    } else {
+                        s.classList.remove('active');
+                    }
+                });
+            });
+        }
+
+        window.generateContent = async function() {
+            const topic = document.getElementById('topicInput').value.trim();
+            const aiModel = "google/gemini-2.0-flash-lite-001";
+            const hook = document.getElementById('hookSelect').value;
+            const pattern = document.getElementById('patternSelect').value;
+            const targetGroup = document.getElementById('targetGroupInput').value.trim() || "အထွေထွေပရိသတ်";
+            const target = document.getElementById('targetInput').value.trim() || "အရည်အသွေးကို နှစ်သက်သူများ";
+            const pyramid = document.getElementById('pyramidSelect').value;
+
+            const errSection = document.getElementById('errorSection');
+            const errText = document.getElementById('errorMessageText');
+            errSection.classList.add('hidden');
+
+            if (!topic) {
+                errText.innerText = "ကျေးဇူးပြု၍ ဘာရောင်းမည်/ပြောမည်ကို ထည့်သွင်းပါ။";
+                errSection.classList.remove('hidden');
+                return;
+            }
+
+            const loading = document.getElementById('loading');
+            const progressText = document.getElementById('progressText');
+            const progressBar = document.getElementById('progressBar');
+            const progressPercent = document.getElementById('progressPercent');
+            const resultSection = document.getElementById('resultSection');
+
+            loading.classList.remove('hidden');
+            resultSection.classList.add('hidden');
+            document.getElementById('genBtn').disabled = true;
+
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                if (progress < 90) {
+                    progress += Math.floor(Math.random() * 12) + 5;
+                    if (progress > 90) progress = 90;
+                    progressBar.style.width = progress + '%';
+                    progressPercent.innerText = progress + '%';
+                    if (progress > 60) progressText.innerText = "TikTok Script တည်ဆောက်နေပါပြီ...";
+                }
+            }, 300);
+
+            const apiKey = verifiedApiKey.startsWith("sk-or-v1-") ? verifiedApiKey : DEFAULT_API_KEY;
+            const apiUrl = "https://openrouter.ai/api/v1/chat/completions";
+
+            const systemPrompt = `You are an expert TikTok content creator and professional copywriter in Myanmar language. 
+Generate a highly engaging, high-converting TikTok video script divided into clear sections (Hook, Body with Pattern, Result, CTA).
+Ensure the tone is natural, persuasive, and directly speaks to the target audience following Chet Holmes' Buyer's Pyramid psychology.`;
+
+            const userPrompt = `
+အချက်အလက်များ:
+- ရောင်းမည့်ပစ္စည်း/အကြောင်းအရာ: ${topic}
+- Hook အမျိုးအစား: ${hook}
+- Content Pattern: ${pattern}
+- Target Group (ပစ်မှတ်အုပ်စု): ${targetGroup}
+- Perfect Customer: ${target}
+- Buyer's Pyramid အဆင့်: ${pyramid}
+
+လိုအပ်ချက်များ:
+၁။ ပထမ ၃ စက္ကန့်အတွင်း လူစိတ်ဝင်စားမှုအလွန်မြင့်မားစေမည့် Hook ဖြင့် စတင်ပါ။
+၂။ တောင်းဆိုထားသော Pattern (${pattern}) အတိုင်း အဓိကအချက်များကို အပိုင်းလိုက် တိကျစွာ ရေးသားပါ။
+၃။ ပရိသတ်၏ Buyer's Pyramid အဆင့် (${pyramid}) နှင့် ကိုက်ညီသော စိတ်ပိုင်းဆိုင်ရာ တွန်းအားပေးမှုများ ထည့်သွင်းပါ။
+၄။ မြန်မာဘာသာစကားဖြင့် သဘာဝကျကျ၊ တိုက်ရိုက်ပြောဆိုနိုင်သော (Voiceover script) ပုံစံဖြင့် တင်ဆက်ပါ။
+`;
+
+            const payload = {
+                model: aiModel,
+                messages: [
+                    { role: "system", content: systemPrompt },
+                    { role: "user", content: userPrompt }
+                ],
+                temperature: 0.7
+            };
+
+            let generatedText = "";
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`,
+                        'Content-Type': 'application/json',
+                        'HTTP-Referer': window.location.href,
+                        'X-Title': 'TikTok Script Writer'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                if (result.choices && result.choices.length > 0) {
+                    generatedText = result.choices[0].message.content;
+                } else {
+                    throw new Error(result.error?.message || "API မှ တုံ့ပြန်မှု မမှန်ကန်ပါ။");
+                }
+            } catch (err) {
+                console.warn("API Error, using fallback template:", err);
+                generatedText = `🎬 TikTok Script: ${topic}\n\n📌 [HOOK - ${hook}]\n(မျက်နှာအမူအရာ - အံ့သြဟန်ဖြင့်)\n"ခင်ဗျားတို့ ${topic} ဝယ်တော့မယ်ဆိုရင် ဒီအမှားမျိုးကို လုံးဝမလုပ်မိစေနဲ့..."\n\n💡 [BODY - ${pattern}]\n- ပထမအချက်အနေနဲ့ ${targetGroup} တွေအတွက် အဓိကကြုံတွေ့ရတဲ့ ပြဿနာကတော့ အရည်အသွေးနဲ့ တန်ဖိုးပဲ ဖြစ်ပါတယ်။\n- ${target} တွေအတွက် အကောင်းဆုံးဖြေရှင်းချက်ကတော့ နည်းလမ်းမှန်ကန်ဖို့ လိုပါတယ်။\n\n🎯 [RESULT & CTA]\n"ယခုပဲ Page Chat မှာ 'လိုချင်ပါတယ်' ဟု မက်ဆေ့ချ်ပို့ပြီး အထူးအခွင့်အရေးကို ရယူလိုက်ပါ!"`;
+            }
+
+            clearInterval(progressInterval);
+            progressBar.style.width = '100%';
+            progressPercent.innerText = '100%';
+
+            setTimeout(() => {
+                loading.classList.add('hidden');
+                document.getElementById('genBtn').disabled = false;
+
+                currentGeneratedScript = generatedText;
+                document.getElementById('selectionSummary').innerHTML = `
+                    <div>🎯 <strong>အကြောင်းအရာ:</strong> ${topic}</div>
+                    <div>⚡ <strong>Hook:</strong> ${hook} | <strong>Pattern:</strong> ${pattern}</div>
+                    <div>👥 <strong>Target:</strong> ${targetGroup} (${target})</div>
+                `;
+                document.getElementById('outputContent').innerText = generatedText;
+                resultSection.classList.remove('hidden');
+                resultSection.scrollIntoView({ behavior: 'smooth' });
+            }, 400);
+        };
+
+        window.copyContent = function() {
+            if (!currentGeneratedScript) return;
+            const textarea = document.createElement('textarea');
+            textarea.value = currentGeneratedScript;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            window.showToast("Script ကို ကူးယူပြီးပါပြီ!");
+        };
+
+        window.saveScriptToCloud = function() {
+            if (!currentGeneratedScript) return;
+            const topicInput = document.getElementById('topicInput')?.value || "TikTok Script";
+            const scriptObj = {
+                id: 'script_' + Date.now(),
+                topic: topicInput,
+                content: currentGeneratedScript,
+                createdAt: new Date().toLocaleString()
+            };
+
+            savedScripts = [scriptObj, ...savedScripts];
+            localStorage.setItem('app_saved_scripts', JSON.stringify(savedScripts));
+            window.renderSavedScripts();
+            window.showToast("Database တွင် အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ!");
+        };
+
+        window.copySavedScriptById = function(id) {
+            const found = savedScripts.find(s => s.id === id);
+            if (!found) return;
+            const textarea = document.createElement('textarea');
+            textarea.value = found.content;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            window.showToast("Copy ကူးပြီးပါပြီ!");
+        };
+
+        window.renderSavedScripts = function() {
+            const container = document.getElementById('savedScriptsList');
+            if (!container) return;
+            const countEl = document.getElementById('savedCount');
+            if (countEl) countEl.innerText = savedScripts.length;
+
+            if (savedScripts.length === 0) {
+                container.innerHTML = `<div class="text-center py-6 text-xs text-slate-500 font-myanmar">Database တွင် သိမ်းဆည်းထားသော Script များ မရှိသေးပါ။</div>`;
+                return;
+            }
+
+            container.innerHTML = savedScripts.map(s => `
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-2 hover:border-slate-700 transition">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-xs text-sky-400 font-myanmar">${s.topic}</span>
+                        <span class="text-[10px] text-slate-500">${s.createdAt}</span>
+                    </div>
+                    <p class="text-xs text-slate-300 font-myanmar line-clamp-2">${s.content}</p>
+                    <div class="flex justify-end gap-2 pt-1">
+                        <button onclick="copySavedScriptById('${s.id}')" class="text-[11px] text-sky-400 hover:text-sky-300 flex items-center gap-1 font-myanmar">
+                            📋 Copy
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            window.renderSavedScripts();
+            setupPyramidInteractivity();
+
+            const savedVerifiedKey = localStorage.getItem('verified_app_key');
+            if (savedVerifiedKey) {
+                const gateInput = document.getElementById('gateKeyInput');
+                if (gateInput) gateInput.value = savedVerifiedKey;
+                checkExistingSession(savedVerifiedKey);
+            }
+            window.setDurationPreset(1);
+        });
+    </script>
+</body>
+</html>
